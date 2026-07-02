@@ -57,6 +57,32 @@
           "value": ".githooks"
         }
       }
+    },
+    {
+      "id": "cli-committed",
+      "type": "git_committed",
+      "description": "CLI entry point is committed at HEAD",
+      "path": "src/cli.ts"
+    },
+    {
+      "id": "build-succeeds",
+      "type": "command",
+      "description": "npm run build exits 0",
+      "run": "npm run build",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
+    },
+    {
+      "id": "tests-pass",
+      "type": "command",
+      "description": "npm test exits 0",
+      "run": "npm test",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
     }
   ]
 }
