@@ -113,6 +113,28 @@
       "expect": {
         "exitCode": 0
       }
+    },
+    {
+      "id": "agents-md-committed",
+      "type": "git_committed",
+      "description": "AGENTS.md is committed at HEAD",
+      "path": "AGENTS.md"
+    },
+    {
+      "id": "skill-md-committed",
+      "type": "git_committed",
+      "description": "SKILL.md is committed at HEAD",
+      "path": "SKILL.md"
+    },
+    {
+      "id": "pack-includes-skill",
+      "type": "command",
+      "description": "npm pack --dry-run includes SKILL.md in the tarball",
+      "run": "sh -c 'npm pack --dry-run 2>&1 | grep -q SKILL.md'",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
     }
   ]
 }
