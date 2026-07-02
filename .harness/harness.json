@@ -1,0 +1,11 @@
+{
+  "version": "0.1",
+  "project": "harnesswright",
+  "workstreamCap": 1,
+  "slices": {
+    "S1": {
+      "title": "First slice",
+      "manifest": ".verity/claims.json"
+    }
+  }
+}
