@@ -135,6 +135,18 @@
       "expect": {
         "exitCode": 0
       }
+    },
+    {
+      "id": "harness-config-committed",
+      "type": "git_committed",
+      "description": "self-hosted harness config is committed at HEAD",
+      "path": ".harness/harness.json"
+    },
+    {
+      "id": "gate-workflow-committed",
+      "type": "git_committed",
+      "description": "CI gate workflow is committed at HEAD",
+      "path": ".github/workflows/gate.yml"
     }
   ]
 }
