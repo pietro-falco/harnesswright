@@ -10,6 +10,7 @@ function runVerity(manifestPath: string, cwd: string): number {
   const result = spawnSync("npx", ["-y", "@pietro-falco/verity", "verify", manifestPath], {
     cwd,
     stdio: "inherit",
+    env: { ...process.env, HARNESSWRIGHT_GATE: "1" },
   });
 
   if (result.error || result.status === null) {
@@ -21,6 +22,13 @@ function runVerity(manifestPath: string, cwd: string): number {
 }
 
 export function runGate(sliceId: string | undefined, cwd: string): number {
+  if (process.env.HARNESSWRIGHT_GATE === "1") {
+    process.stderr.write(
+      "recursive gate invocation detected: a claim in the manifest invokes gate on the manifest under verification (see docs/spec.md §2)\n",
+    );
+    return 2;
+  }
+
   if (sliceId === undefined) {
     if (!existsSync(join(cwd, DEFAULT_MANIFEST_PATH))) {
       process.stderr.write(`manifest not found: ${DEFAULT_MANIFEST_PATH}\n`);

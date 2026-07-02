@@ -48,12 +48,16 @@ silent behavior.
 |------|---------|
 | 0 | All claims in the resolved manifest passed. |
 | 1 | One or more claims failed. |
-| 2 | Configuration error: missing/invalid `harness.json`, unknown slice id, unresolvable or absolute manifest path, verity not resolvable. |
+| 2 | Configuration error: missing/invalid `harness.json`, unknown slice id, unresolvable or absolute manifest path, verity not resolvable, recursive gate invocation. |
 
 `harnesswright gate` with no argument verifies `.verity/claims.json` at the
 repo root. `harnesswright gate <slice-id>` resolves `slices.<id>.manifest`.
 When delegation to verity succeeds, verity's exit code is propagated
 **unchanged**; harnesswright adds no interpretation layer.
+
+A manifest MUST NOT contain a claim that invokes `gate` (or `verity
+verify`) on the manifest currently under verification. `gate` detects this
+re-entrancy via the `HARNESSWRIGHT_GATE` environment variable and exits 2.
 
 ## 3. Emitted-file contract (`init`)
 

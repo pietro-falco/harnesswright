@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import process from "node:process";
 import { test } from "node:test";
 import { runGate } from "./gate.ts";
 
@@ -97,6 +98,27 @@ test("gate returns 2 when the slice manifest does not exist", () => {
   );
 
   assert.equal(runGate("S1", dir), 2);
+
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("gate returns 2 immediately when HARNESSWRIGHT_GATE=1 is already set, without spawning anything", () => {
+  const dir = makeTmpRepo();
+  writeFileSync(join(dir, "README.md"), "hello\n");
+  writeClaims(dir, [{ id: "readme-exists", type: "file_exists", path: "README.md" }]);
+  commitAll(dir, "seed");
+
+  const previous = process.env.HARNESSWRIGHT_GATE;
+  process.env.HARNESSWRIGHT_GATE = "1";
+  try {
+    assert.equal(runGate(undefined, dir), 2);
+  } finally {
+    if (previous === undefined) {
+      delete process.env.HARNESSWRIGHT_GATE;
+    } else {
+      process.env.HARNESSWRIGHT_GATE = previous;
+    }
+  }
 
   rmSync(dir, { recursive: true, force: true });
 });
