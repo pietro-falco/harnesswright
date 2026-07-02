@@ -12,12 +12,17 @@
   "bin": {
     "harnesswright": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "SKILL.md"
+  ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "build": "tsc",
-    "test": "node --test"
+    "test": "node --test",
+    "prepublishOnly": "npm run build && npm test"
   },
   "devDependencies": {
     "@types/node": "^26.1.0",
