@@ -9,6 +9,9 @@
     "url": "git+https://github.com/pietro-falco/harnesswright.git"
   },
   "type": "module",
+  "bin": {
+    "harnesswright": "dist/cli.js"
+  },
   "engines": {
     "node": ">=20"
   },
