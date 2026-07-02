@@ -13,7 +13,7 @@ then migrates to `.harness/ledger.md`.
 | S3 | init core | 3 | Pure `plan()` + `emit`, `--dry-run`/`--force`/`--yes`, embedded templates v1, `node --test` green | Test run stdout | Deterministic — Passed 2026-07-02 |
 | S4 | gate command | 3 + 1 incident fix (self-recursive gate claim removed) | Fixture repos: pass → 0, fail → 1, config error → 2; exit codes propagated from verity | Fixture run exit codes | Deterministic — Passed 2026-07-02 |
 | S5 | doctor | 2 | Detects missing git, inactive `hooksPath`, unresolvable verity, duplicate branch checkouts; read-only | Doctor run stdout | Deterministic — Passed 2026-07-02 |
-| S6 | Adoption layer | 4 (ledger, own contract, npm packaging, verity claims) | `AGENTS.md` + `SKILL.md` templates; npm files whitelist; `SKILL.md` in tarball (`npm pack --dry-run`) | `npm pack --dry-run` output | Deterministic |
-| S7 | Self-hosting + CI | 2 | Repo adopts its own harness; `gate.yml` matrix Node 20/22/24; CI green | CI run link/log | Human verifies CI on GitHub |
+| S6 | Adoption layer | 4 (ledger, own contract, npm packaging, verity claims) | `AGENTS.md` + `SKILL.md` templates; npm files whitelist; `SKILL.md` in tarball (`npm pack --dry-run`) | `npm pack --dry-run` output | Deterministic — Passed 2026-07-02 |
+| S7 | Self-hosting + CI | 5 (ledger, init adoption, curation, CI from source, verity claims) | Repo adopts its own harness; `gate.yml` matrix Node 20/22/24; CI green | CI run link/log | Human verifies CI on GitHub |
 | S8 | Publish-readiness v0.1.0 | 4 | README (thesis, 60-sec quickstart, comparison table, non-goals, built-with-itself), reproducible demo (vhs tape), `SECURITY.md` + `CHANGELOG`, release v0.1.0 | Release artifact, demo tape | Human manual npm publish + push |
 | S9 | Post-publish hardening | 1 | npm trusted publishing (OIDC) + provenance, configured after first manual publish; releases stay operator-initiated via tag | npmjs.com config screenshot/log | Human configures npmjs.com |
