@@ -93,6 +93,26 @@
       "expect": {
         "exitCode": 0
       }
+    },
+    {
+      "id": "doctor-passes",
+      "type": "command",
+      "description": "doctor exits 0 against this repo",
+      "run": "node dist/cli.js doctor",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
+    },
+    {
+      "id": "gate-reentrancy-guard",
+      "type": "command",
+      "description": "gate exits 2 when the re-entrancy guard env var is already set",
+      "run": "sh -c 'HARNESSWRIGHT_GATE=1 node dist/cli.js gate; test $? -eq 2'",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
     }
   ]
 }
