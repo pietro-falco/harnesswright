@@ -46,16 +46,13 @@
       "path": ".harness/ledger.md"
     },
     {
-      "id": "hooks-path-active",
+      "id": "pre-commit-hook-executable",
       "type": "command",
-      "description": "core.hooksPath points at .githooks",
-      "run": "git config core.hooksPath",
+      "description": "pre-commit hook is committed with the executable bit set",
+      "run": "sh -c 'git ls-files -s .githooks/pre-commit | grep -q ^100755'",
+      "timeoutMs": 60000,
       "expect": {
-        "exitCode": 0,
-        "stdout": {
-          "kind": "substring",
-          "value": ".githooks"
-        }
+        "exitCode": 0
       }
     },
     {
