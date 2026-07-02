@@ -25,13 +25,30 @@ function commitAll(dir: string, message: string): void {
   execFileSync("git", ["commit", "-q", "-m", message], { cwd: dir });
 }
 
+function withCleanGateEnv<T>(fn: () => T): T {
+  const previous = process.env.HARNESSWRIGHT_GATE;
+  delete process.env.HARNESSWRIGHT_GATE;
+  try {
+    return fn();
+  } finally {
+    if (previous === undefined) {
+      delete process.env.HARNESSWRIGHT_GATE;
+    } else {
+      process.env.HARNESSWRIGHT_GATE = previous;
+    }
+  }
+}
+
 test("gate with no slice id returns 0 when the manifest passes", () => {
   const dir = makeTmpRepo();
   writeFileSync(join(dir, "README.md"), "hello\n");
   writeClaims(dir, [{ id: "readme-exists", type: "file_exists", path: "README.md" }]);
   commitAll(dir, "seed");
 
-  assert.equal(runGate(undefined, dir), 0);
+  assert.equal(
+    withCleanGateEnv(() => runGate(undefined, dir)),
+    0,
+  );
 
   rmSync(dir, { recursive: true, force: true });
 });
@@ -41,7 +58,10 @@ test("gate with no slice id returns 1 when a claim fails", () => {
   writeClaims(dir, [{ id: "missing-file", type: "file_exists", path: "does-not-exist.txt" }]);
   commitAll(dir, "seed");
 
-  assert.equal(runGate(undefined, dir), 1);
+  assert.equal(
+    withCleanGateEnv(() => runGate(undefined, dir)),
+    1,
+  );
 
   rmSync(dir, { recursive: true, force: true });
 });
@@ -49,7 +69,10 @@ test("gate with no slice id returns 1 when a claim fails", () => {
 test("gate returns 2 when there is no manifest and no harness.json", () => {
   const dir = makeTmpRepo();
 
-  assert.equal(runGate(undefined, dir), 2);
+  assert.equal(
+    withCleanGateEnv(() => runGate(undefined, dir)),
+    2,
+  );
 
   rmSync(dir, { recursive: true, force: true });
 });
@@ -67,7 +90,10 @@ test("gate returns 2 when harness.json has an unknown field", () => {
     }),
   );
 
-  assert.equal(runGate("S1", dir), 2);
+  assert.equal(
+    withCleanGateEnv(() => runGate("S1", dir)),
+    2,
+  );
 
   rmSync(dir, { recursive: true, force: true });
 });
@@ -80,7 +106,10 @@ test("gate returns 2 for an unknown slice id", () => {
     JSON.stringify({ version: "0.1", project: "p", slices: { S1: { manifest: ".verity/claims.json" } } }),
   );
 
-  assert.equal(runGate("NOPE", dir), 2);
+  assert.equal(
+    withCleanGateEnv(() => runGate("NOPE", dir)),
+    2,
+  );
 
   rmSync(dir, { recursive: true, force: true });
 });
@@ -97,7 +126,10 @@ test("gate returns 2 when the slice manifest does not exist", () => {
     }),
   );
 
-  assert.equal(runGate("S1", dir), 2);
+  assert.equal(
+    withCleanGateEnv(() => runGate("S1", dir)),
+    2,
+  );
 
   rmSync(dir, { recursive: true, force: true });
 });
