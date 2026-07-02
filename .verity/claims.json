@@ -1,0 +1,62 @@
+{
+  "version": "0.1",
+  "claims": [
+    {
+      "id": "license-exists",
+      "type": "file_exists",
+      "description": "LICENSE file exists at repo root",
+      "path": "LICENSE"
+    },
+    {
+      "id": "adr-001-committed",
+      "type": "git_committed",
+      "description": "ADR-001 is committed at HEAD",
+      "path": "docs/adrs/0001-governance-first-harness-generator.md"
+    },
+    {
+      "id": "adr-001-status-proposed",
+      "type": "file_matches",
+      "description": "ADR-001 declares Status: Proposed",
+      "path": "docs/adrs/0001-governance-first-harness-generator.md",
+      "match": {
+        "kind": "substring",
+        "value": "**Status:** Proposed"
+      }
+    },
+    {
+      "id": "package-json-name",
+      "type": "file_matches",
+      "description": "package.json declares the harnesswright package name",
+      "path": "package.json",
+      "match": {
+        "kind": "substring",
+        "value": "\"name\": \"harnesswright\""
+      }
+    },
+    {
+      "id": "pre-commit-hook-committed",
+      "type": "git_committed",
+      "description": "pre-commit hook is committed at HEAD",
+      "path": ".githooks/pre-commit"
+    },
+    {
+      "id": "ledger-committed",
+      "type": "git_committed",
+      "description": "slice ledger is committed at HEAD",
+      "path": "docs/ledger.md"
+    },
+    {
+      "id": "hooks-path-active",
+      "type": "command",
+      "description": "core.hooksPath points at .githooks",
+      "run": "git config core.hooksPath",
+      "expect": {
+        "exitCode": 0,
+        "stdout": {
+          "kind": "substring",
+          "value": ".githooks"
+        }
+      }
+    }
+  ]
+}
