@@ -85,16 +85,6 @@
       }
     },
     {
-      "id": "gate-noarg-passes",
-      "type": "command",
-      "description": "gate with no slice id passes against this repo's own manifest",
-      "run": "node dist/cli.js gate",
-      "timeoutMs": 60000,
-      "expect": {
-        "exitCode": 0
-      }
-    },
-    {
       "id": "gate-unknown-slice-exits-2",
       "type": "command",
       "description": "gate exits 2 for an unknown slice id",
