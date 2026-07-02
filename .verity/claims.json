@@ -43,7 +43,7 @@
       "id": "ledger-committed",
       "type": "git_committed",
       "description": "slice ledger is committed at HEAD",
-      "path": "docs/ledger.md"
+      "path": ".harness/ledger.md"
     },
     {
       "id": "hooks-path-active",
