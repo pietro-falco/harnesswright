@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { basename, join } from "node:path";
 import process from "node:process";
 import { parseArgs } from "node:util";
+import { runDoctor } from "./doctor.ts";
 import { emit } from "./emit.ts";
 import { runGate } from "./gate.ts";
 import { plan } from "./plan.ts";
@@ -13,6 +14,7 @@ const USAGE = `harnesswright — governance-first, verification-first harness ge
 Usage:
   harnesswright init [--yes] [--dry-run] [--force]
   harnesswright gate [slice-id]
+  harnesswright doctor
 
 Options:
   --yes        Apply the plan without confirmation
@@ -81,6 +83,10 @@ export function main(argv: string[]): number {
 
   if (cmd === "gate") {
     return process.exit(runGate(rest[0], process.cwd()));
+  }
+
+  if (cmd === "doctor") {
+    return runDoctor(process.cwd());
   }
 
   process.stderr.write(`unknown command: ${cmd}\n${USAGE}\n`);
