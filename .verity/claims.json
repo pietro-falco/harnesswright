@@ -16,7 +16,7 @@
     {
       "id": "adr-001-status-accepted",
       "type": "file_matches",
-      "description": "ADR-001 declares Status: Proposed",
+      "description": "ADR-001 declares Status: Accepted",
       "path": "docs/adrs/0001-governance-first-harness-generator.md",
       "match": {
         "kind": "substring",
