@@ -1,6 +1,6 @@
 # ADR-001: harnesswright — a governance-first harness generator for coding agents
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-02
 - **Deciders:** Pietro Falco
 
