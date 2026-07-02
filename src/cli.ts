@@ -4,6 +4,7 @@ import { basename, join } from "node:path";
 import process from "node:process";
 import { parseArgs } from "node:util";
 import { emit } from "./emit.ts";
+import { runGate } from "./gate.ts";
 import { plan } from "./plan.ts";
 import { renderTemplates } from "./templates.ts";
 
@@ -11,6 +12,7 @@ const USAGE = `harnesswright — governance-first, verification-first harness ge
 
 Usage:
   harnesswright init [--yes] [--dry-run] [--force]
+  harnesswright gate [slice-id]
 
 Options:
   --yes        Apply the plan without confirmation
@@ -75,6 +77,10 @@ export function main(argv: string[]): number {
 
   if (cmd === "init") {
     return runInitCommand(rest);
+  }
+
+  if (cmd === "gate") {
+    return process.exit(runGate(rest[0], process.cwd()));
   }
 
   process.stderr.write(`unknown command: ${cmd}\n${USAGE}\n`);
