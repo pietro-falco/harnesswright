@@ -144,6 +144,54 @@
       "type": "git_committed",
       "description": "CI gate workflow is committed at HEAD",
       "path": ".github/workflows/gate.yml"
+    },
+    {
+      "id": "security-md-committed",
+      "type": "git_committed",
+      "description": "security policy is committed at HEAD",
+      "path": "SECURITY.md"
+    },
+    {
+      "id": "changelog-committed",
+      "type": "git_committed",
+      "description": "changelog is committed at HEAD",
+      "path": "CHANGELOG.md"
+    },
+    {
+      "id": "version-is-0-1-0",
+      "type": "file_matches",
+      "description": "package.json declares version 0.1.0",
+      "path": "package.json",
+      "match": {
+        "kind": "substring",
+        "value": "\"version\": \"0.1.0\""
+      }
+    },
+    {
+      "id": "readme-built-with-itself",
+      "type": "file_matches",
+      "description": "README documents the built-with-itself incidents",
+      "path": "README.md",
+      "match": {
+        "kind": "substring",
+        "value": "## Built with itself"
+      }
+    },
+    {
+      "id": "demo-validator-committed",
+      "type": "git_committed",
+      "description": "OSINT demo validator is committed at HEAD",
+      "path": "demo/osint/validate.py"
+    },
+    {
+      "id": "demo-schema-passes",
+      "type": "command",
+      "description": "OSINT demo validator exits 0 from repo root",
+      "run": "python3 demo/osint/validate.py",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
     }
   ]
 }
