@@ -192,6 +192,22 @@
       "expect": {
         "exitCode": 0
       }
+    },
+    {
+      "id": "release-workflow-committed",
+      "type": "git_committed",
+      "description": "trusted-publishing release workflow is committed at HEAD",
+      "path": ".github/workflows/release.yml"
+    },
+    {
+      "id": "pack-includes-changelog",
+      "type": "command",
+      "description": "npm pack --dry-run includes CHANGELOG.md in the tarball",
+      "run": "sh -c 'npm pack --dry-run 2>&1 | grep -q CHANGELOG.md'",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
     }
   ]
 }
