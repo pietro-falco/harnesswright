@@ -1,6 +1,6 @@
 {
   "name": "harnesswright",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Governance-first, verification-first harness generator for coding agents. Specs govern intent; workflows give agent work its shape; deterministic gates give it truth.",
   "license": "MIT",
   "author": "Pietro Falco",
