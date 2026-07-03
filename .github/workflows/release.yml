@@ -18,7 +18,7 @@ jobs:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
       # npm >=11.5.1 required for OIDC trusted publishing; provenance is automatic
-      - run: npm install -g npm@latest
+      - run: npm install -g npm@11.5.1
       - run: npm --version
       - run: npm ci
       - run: npm run build
