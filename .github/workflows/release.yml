@@ -1,0 +1,28 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      # npm >=11.5.1 required for OIDC trusted publishing; provenance is automatic
+      - run: npm install -g npm@latest
+      - run: npm --version
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      # deterministic gate before publish — CI invokes gate; no claim invokes gate (re-entrancy guard stays intact)
+      - run: node dist/cli.js gate
+      - run: npm publish
