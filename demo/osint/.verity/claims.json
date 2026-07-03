@@ -1,0 +1,33 @@
+{
+  "version": "0.1",
+  "claims": [
+    {
+      "id": "demo-readme-committed",
+      "type": "git_committed",
+      "description": "demo README is committed at HEAD",
+      "path": "README.md"
+    },
+    {
+      "id": "indicators-csv-committed",
+      "type": "git_committed",
+      "description": "synthetic indicators dataset is committed at HEAD",
+      "path": "indicators.csv"
+    },
+    {
+      "id": "validator-committed",
+      "type": "git_committed",
+      "description": "schema validator is committed at HEAD",
+      "path": "validate.py"
+    },
+    {
+      "id": "schema-passes",
+      "type": "command",
+      "description": "validate.py exits 0: schema valid, no duplicates",
+      "run": "python3 validate.py",
+      "timeoutMs": 60000,
+      "expect": {
+        "exitCode": 0
+      }
+    }
+  ]
+}
