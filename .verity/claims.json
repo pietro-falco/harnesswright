@@ -158,13 +158,13 @@
       "path": "CHANGELOG.md"
     },
     {
-      "id": "version-is-0-1-0",
+      "id": "version-is-0-1-1",
       "type": "file_matches",
-      "description": "package.json declares version 0.1.0",
+      "description": "package.json declares version 0.1.1",
       "path": "package.json",
       "match": {
         "kind": "substring",
-        "value": "\"version\": \"0.1.0\""
+        "value": "\"version\": \"0.1.1\""
       }
     },
     {
