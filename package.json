@@ -14,7 +14,8 @@
   },
   "files": [
     "dist",
-    "SKILL.md"
+    "SKILL.md",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=20"
