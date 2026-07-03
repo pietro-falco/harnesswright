@@ -4,6 +4,23 @@ All notable changes to this project are documented in this file. The
 format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project adheres to [Semantic Versioning](https://semver.org).
 
+## [0.1.1] — 2026-07-03
+
+### Added
+
+- Dependabot config for `github-actions` and `npm` ecosystems (weekly).
+
+### Changed
+
+- `CHANGELOG.md` is now shipped inside the npm tarball (`files` whitelist).
+
+### Security
+
+- Trusted publishing via GitHub Actions OIDC (`id-token: write`,
+  tag-triggered `release.yml`, npm 11.5.1, automatic provenance). Publishing
+  stays operator-initiated via tag.
+- Pinned all GitHub Actions in `release.yml` to full commit SHA.
+
 ## [0.1.0] — 2026-07-02
 
 First public release.
