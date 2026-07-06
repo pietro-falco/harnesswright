@@ -1,6 +1,7 @@
 # ADR-002: `next` — a read-only slice scheduler for the harness
 
-- **Status:** Proposed
+- **Status:** Accepted
+- **Accepted:** 2026-07-06
 - **Date:** 2026-07-06
 - **Deciders:** Pietro Falco
 
@@ -51,22 +52,33 @@ never executes, never advances state, never writes.
   `next` is informational, not a pass/fail gate — keeping its exit vocabulary
   distinct from `gate`.
 
-### Source of completion state — the open question (decide before Accepted)
+### Source of completion state — resolved
 
-The ledger `Gate` column is human-authored prose (`Passed 2026-07-02`). Parsing
-markdown prose to decide "done" is fragile and couples scheduling to formatting.
-Two options:
+Decision: **option 2 — machine-readable state.** Completion is read from an
+optional `status` field per slice in `.harness/harness.json`. The ledger `.md`
+remains the human narrative and is never parsed by `next`.
 
-1. **Ledger-derived** (as literally described in the S10 ledger row): parse the
-   ledger status column. Simplest, but re-imports prose-drift risk.
-2. **Machine-readable state:** completion comes from a `status` field per slice
-   in `.harness/harness.json` and/or a passing verity receipt under
-   `.verity/reports/`. Robust, consistent with "receipts, not prose," at the
-   cost of a small schema addition.
+Authority rule: `.harness/harness.json` is the single machine-readable source
+of truth for slice completion; `.harness/ledger.md` is the human log. Where
+the two diverge, `harness.json` governs `next`'s output and the divergence is
+an operator error to fix. A verity claim checking their coherence is a
+possible follow-up, out of scope here.
 
-**Recommendation: option 2** — `next` reads a `status` field in `harness.json`
-(single machine-readable source of truth); the ledger `.md` stays the human
-narrative. This is the substantive decision to settle before the Accepted commit.
+Schema addition (backward compatible): each slice MAY carry
+`"status": "passed"` and optionally `"passedOn": "YYYY-MM-DD"`. Any other
+`status` value is a configuration error (exit 2). An absent `status` means
+the slice is not passed. v0-emitted repos therefore keep working unchanged:
+with no `status` fields, `next` reports the first slice in order as unlocked.
+
+Ordering rule: the slice sequence is the slice IDs sorted by natural numeric
+order on their numeric suffix (`S2` before `S10`); IDs without a numeric
+suffix sort lexicographically after numbered ones. JSON object key order is
+never relied upon.
+
+Optional `criteria` field: a slice MAY carry `"criteria": ["..."]`, an array
+of acceptance-criteria strings. When present, `next` prints them verbatim for
+the unlocked slice — quoted from the harness, not paraphrased. When absent,
+`next` prints the slice `title` and `manifest` path.
 
 ### Implementation shape (Accepted phase, not this commit)
 
