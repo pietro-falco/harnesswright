@@ -1,15 +1,24 @@
 import { isAbsolute } from "node:path";
 
+export type HarnessSlice = {
+  title?: string;
+  manifest: string;
+  status?: "passed";
+  passedOn?: string;
+  criteria?: string[];
+};
+
 export type HarnessConfig = {
   version: "0.1";
   project: string;
   workstreamCap: number;
-  slices: Record<string, { title?: string; manifest: string }>;
+  slices: Record<string, HarnessSlice>;
 };
 
 const TOP_LEVEL_FIELDS = new Set(["version", "project", "workstreamCap", "slices"]);
-const SLICE_FIELDS = new Set(["title", "manifest"]);
+const SLICE_FIELDS = new Set(["title", "manifest", "status", "passedOn", "criteria"]);
 const SLICE_KEY_PATTERN = /^[A-Za-z0-9_-]+$/;
+const PASSED_ON_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export function parseHarnessConfig(raw: string): HarnessConfig {
   let data: unknown;
@@ -50,7 +59,7 @@ export function parseHarnessConfig(raw: string): HarnessConfig {
     workstreamCap = rawWorkstreamCap;
   }
 
-  const slices: Record<string, { title?: string; manifest: string }> = {};
+  const slices: Record<string, HarnessSlice> = {};
   const rawSlices = obj.slices;
   if (rawSlices !== undefined) {
     if (typeof rawSlices !== "object" || rawSlices === null || Array.isArray(rawSlices)) {
@@ -87,7 +96,29 @@ export function parseHarnessConfig(raw: string): HarnessConfig {
         throw new Error(`slice "${sliceId}" title must be a string`);
       }
 
-      slices[sliceId] = title === undefined ? { manifest } : { title, manifest };
+      const status = sliceObj.status;
+      if (status !== undefined && status !== "passed") {
+        throw new Error(`slice "${sliceId}" status must be "passed", got: ${JSON.stringify(status)}`);
+      }
+
+      const passedOn = sliceObj.passedOn;
+      if (passedOn !== undefined && (typeof passedOn !== "string" || !PASSED_ON_PATTERN.test(passedOn))) {
+        throw new Error(`slice "${sliceId}" passedOn must be a string in YYYY-MM-DD format`);
+      }
+
+      const criteria = sliceObj.criteria;
+      if (criteria !== undefined) {
+        if (!Array.isArray(criteria) || criteria.some((c) => typeof c !== "string")) {
+          throw new Error(`slice "${sliceId}" criteria must be an array of strings`);
+        }
+      }
+
+      const slice: HarnessSlice = { manifest };
+      if (title !== undefined) slice.title = title;
+      if (status !== undefined) slice.status = status;
+      if (passedOn !== undefined) slice.passedOn = passedOn;
+      if (criteria !== undefined) slice.criteria = criteria as string[];
+      slices[sliceId] = slice;
     }
   }
 

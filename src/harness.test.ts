@@ -79,3 +79,86 @@ test("workstreamCap defaults to 1 when absent", () => {
   const config = parseHarnessConfig(JSON.stringify({ version: "0.1", project: "my-app" }));
   assert.equal(config.workstreamCap, 1);
 });
+
+test("valid config with status, passedOn, and criteria", () => {
+  const config = parseHarnessConfig(
+    JSON.stringify({
+      version: "0.1",
+      project: "my-app",
+      slices: {
+        S1: {
+          title: "First slice",
+          manifest: ".verity/claims.json",
+          status: "passed",
+          passedOn: "2026-07-02",
+          criteria: ["a", "b"],
+        },
+      },
+    }),
+  );
+  assert.deepEqual(config.slices, {
+    S1: {
+      title: "First slice",
+      manifest: ".verity/claims.json",
+      status: "passed",
+      passedOn: "2026-07-02",
+      criteria: ["a", "b"],
+    },
+  });
+});
+
+test("status other than 'passed' throws", () => {
+  assert.throws(
+    () =>
+      parseHarnessConfig(
+        JSON.stringify({
+          version: "0.1",
+          project: "my-app",
+          slices: { S1: { manifest: ".verity/claims.json", status: "done" } },
+        }),
+      ),
+    /status/,
+  );
+});
+
+test("passedOn in the wrong format throws", () => {
+  assert.throws(
+    () =>
+      parseHarnessConfig(
+        JSON.stringify({
+          version: "0.1",
+          project: "my-app",
+          slices: { S1: { manifest: ".verity/claims.json", passedOn: "07/02/2026" } },
+        }),
+      ),
+    /passedOn/,
+  );
+});
+
+test("criteria as a non-array throws", () => {
+  assert.throws(
+    () =>
+      parseHarnessConfig(
+        JSON.stringify({
+          version: "0.1",
+          project: "my-app",
+          slices: { S1: { manifest: ".verity/claims.json", criteria: "not an array" } },
+        }),
+      ),
+    /criteria/,
+  );
+});
+
+test("criteria with a non-string element throws", () => {
+  assert.throws(
+    () =>
+      parseHarnessConfig(
+        JSON.stringify({
+          version: "0.1",
+          project: "my-app",
+          slices: { S1: { manifest: ".verity/claims.json", criteria: ["ok", 5] } },
+        }),
+      ),
+    /criteria/,
+  );
+});
