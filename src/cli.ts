@@ -6,6 +6,7 @@ import { parseArgs } from "node:util";
 import { runDoctor } from "./doctor.ts";
 import { emit } from "./emit.ts";
 import { runGate } from "./gate.ts";
+import { runNext } from "./next.ts";
 import { plan } from "./plan.ts";
 import { renderTemplates } from "./templates.ts";
 
@@ -15,11 +16,13 @@ Usage:
   harnesswright init [--yes] [--dry-run] [--force]
   harnesswright gate [slice-id]
   harnesswright doctor
+  harnesswright next [--json]
 
 Options:
   --yes        Apply the plan without confirmation
   --dry-run    Print the plan and exit without writing anything
-  --force      Overwrite files that already exist`;
+  --force      Overwrite files that already exist
+  --json       Emit machine-readable JSON (next only)`;
 
 function runInitCommand(args: string[]): number {
   let parsed: ReturnType<typeof parseArgs>;
@@ -69,6 +72,26 @@ function runInitCommand(args: string[]): number {
   return 0;
 }
 
+function runNextCommand(args: string[]): number {
+  let parsed: ReturnType<typeof parseArgs>;
+  try {
+    parsed = parseArgs({
+      args,
+      options: {
+        json: { type: "boolean", default: false },
+      },
+      strict: true,
+      allowPositionals: false,
+    });
+  } catch (err) {
+    process.stderr.write(`${(err as Error).message}\n`);
+    return 2;
+  }
+
+  const json = Boolean(parsed.values.json);
+  return runNext(process.cwd(), json);
+}
+
 export function main(argv: string[]): number {
   const [cmd, ...rest] = argv;
 
@@ -87,6 +110,10 @@ export function main(argv: string[]): number {
 
   if (cmd === "doctor") {
     return runDoctor(process.cwd());
+  }
+
+  if (cmd === "next") {
+    return runNextCommand(rest);
   }
 
   process.stderr.write(`unknown command: ${cmd}\n${USAGE}\n`);
