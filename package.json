@@ -4,10 +4,24 @@
   "description": "Governance-first, verification-first harness generator for coding agents. Specs govern intent; workflows give agent work its shape; deterministic gates give it truth.",
   "license": "MIT",
   "author": "Pietro Falco",
+  "homepage": "https://github.com/pietro-falco/harnesswright#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pietro-falco/harnesswright.git"
   },
+  "keywords": [
+    "ai-agents",
+    "coding-agents",
+    "verification",
+    "governance",
+    "provenance",
+    "evidence",
+    "harness",
+    "claude-code",
+    "cli",
+    "deterministic",
+    "supply-chain"
+  ],
   "type": "module",
   "bin": {
     "harnesswright": "dist/cli.js"
