@@ -1,6 +1,6 @@
 # ADR-003: per-slice spec schema — an executable contract per slice
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-10
 - **Deciders:** Pietro Falco
 
