@@ -15,6 +15,11 @@
       "status": "passed",
       "passedOn": "2026-07-11",
       "criteria": ["tests-pass", "build-succeeds"]
+    },
+    "S13": {
+      "title": "Document spec schema + Mode B eligibility in docs/spec.md",
+      "manifest": ".verity/claims.json",
+      "criteria": ["spec-md-covers-specs-schema", "spec-md-covers-eligibility"]
     }
   }
 }
