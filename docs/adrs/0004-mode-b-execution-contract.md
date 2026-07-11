@@ -1,6 +1,7 @@
 # ADR-004: Mode B execution contract — eligibility, path leases, temporal binding, model routing, closure receipts
 
-- **Status:** Proposed
+- **Status:** Accepted
+- **Accepted:** 2026-07-11
 - **Date:** 2026-07-11
 - **Deciders:** Pietro Falco
 - **Related:** ADR-001 (execution boundary), ADR-002 (`next`, authority rule),
