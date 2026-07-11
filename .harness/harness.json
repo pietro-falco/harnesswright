@@ -6,6 +6,11 @@
     "S1": {
       "title": "First slice",
       "manifest": ".verity/claims.json"
+    },
+    "S12": {
+      "title": "ADR-004 implementation: spec validator, Mode B eligibility, lock read",
+      "manifest": ".verity/claims.json",
+      "criteria": ["tests-pass", "build-succeeds"]
     }
   }
 }
