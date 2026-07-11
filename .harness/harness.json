@@ -5,7 +5,9 @@
   "slices": {
     "S1": {
       "title": "First slice",
-      "manifest": ".verity/claims.json"
+      "manifest": ".verity/claims.json",
+      "status": "passed",
+      "passedOn": "2026-07-02"
     },
     "S12": {
       "title": "ADR-004 implementation: spec validator, Mode B eligibility, lock read",
