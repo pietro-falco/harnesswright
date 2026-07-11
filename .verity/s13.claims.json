@@ -1,0 +1,25 @@
+{
+  "version": "0.1",
+  "claims": [
+    {
+      "id": "spec-md-covers-specs-schema",
+      "type": "file_matches",
+      "description": "docs/spec.md documents the .harness/specs/S<id>.md frontmatter schema",
+      "path": "docs/spec.md",
+      "match": {
+        "kind": "substring",
+        "value": ".harness/specs/"
+      }
+    },
+    {
+      "id": "spec-md-covers-eligibility",
+      "type": "file_matches",
+      "description": "docs/spec.md documents the Mode B eligibility predicate",
+      "path": "docs/spec.md",
+      "match": {
+        "kind": "substring",
+        "value": "eligible_mode_b"
+      }
+    }
+  ]
+}
