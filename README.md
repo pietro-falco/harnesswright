@@ -145,6 +145,14 @@ indicators dataset with a schema validator and its own claims manifest.
 It exists to make the thesis concrete: the agent's prose says the data is
 clean; the receipt proves it. Zero API keys, zero network.
 
+```sh
+cd demo/osint
+npx harnesswright gate   # watch claims reconcile against the real files
+```
+
+The demo's claims are part of this repository's own gate — if the demo
+breaks, the build breaks.
+
 ## Security
 
 `gate` executes the commands declared in the target repository's
