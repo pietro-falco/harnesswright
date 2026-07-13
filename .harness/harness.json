@@ -19,7 +19,9 @@
     "S13": {
       "title": "Document spec schema + Mode B eligibility in docs/spec.md",
       "manifest": ".verity/s13.claims.json",
-      "criteria": ["spec-md-covers-specs-schema", "spec-md-covers-eligibility"]
+      "criteria": ["spec-md-covers-specs-schema", "spec-md-covers-eligibility"],
+      "status": "passed",
+      "passedOn": "2026-07-13"
     }
   }
 }
