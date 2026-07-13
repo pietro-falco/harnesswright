@@ -1,0 +1,46 @@
+# harnesswright
+
+> An agent's "done" is a claim, not a fact. harnesswright generates a
+> governance-first, verification-first harness into any repository where
+> coding agents work — deterministic gates turn claims into receipts.
+
+## What it is
+
+- A zero-runtime-dependency Node CLI (Node >= 20) that emits plain committed files: no daemon, no telemetry, no API keys.
+- The truth layer under agent work: claims reconciled against the literal filesystem, git HEAD, and command exit codes, powered by verity.
+- Agent-agnostic: the same receipt whether the work came from Claude Code, Codex, Gemini CLI, Cursor, or a human.
+
+## What it is NOT
+
+- Never executes or orchestrates agents: no spawning, no scheduling, no prompts (ADR-001).
+- No LLM-as-judge: a check performed by a model is an opinion; a receipt is evidence.
+- Not a spec or PRD generator: write intent upstream (e.g. GitHub Spec Kit).
+- Not a CI platform: it emits a workflow that runs the same gate CI and your laptop both trust.
+
+## Commands
+
+- `harnesswright init [--yes|--dry-run|--force]` — emit the harness (10 files) into the current repo; existing files are skipped unless `--force`.
+- `harnesswright gate [slice-id]` — deterministic gate: exit 0 all claims pass, 1 at least one claim fails (full stop), 2 configuration error.
+- `harnesswright doctor` — read-only environment checks.
+- `harnesswright next [--json]` — read-only scheduler: reports the first unlocked slice (manifest, criteria, Mode B eligibility) or `all-passed`.
+
+## Key concepts
+
+- slice: one evidence-gated unit of work in the build plan; sequenced in `.harness/harness.json`.
+- claim: one machine-checkable assertion (`file_exists`, `file_matches`, `git_committed`, `command`) in a verity manifest.
+- manifest: the `.verity/claims.json` file declaring a slice's claims; read it before running `gate` on untrusted code, exactly like npm scripts.
+- gate: deterministic reconciliation of every claim against filesystem, git HEAD, and exit codes — no model in the loop.
+- receipt: the gate's output; evidence, not opinion — identical locally and in CI.
+- ledger: `.harness/ledger.md`, the committed build plan; every slice records its required evidence and its gate.
+- spec: per-slice contract at `.harness/specs/<id>.md` — mode, status, effort, budget, stop conditions, criteria, scope.
+- Mode A: attended execution — operator in the loop.
+- Mode B: unattended-within-budget execution; eligible only when the slice is unlocked, its spec is `mode: B` with `status: accepted`, and no lock is present.
+- lock: `.harness/locks/<id>.lock` — file presence means a session is executing the slice; content is audit-only.
+
+## Files that matter
+
+- docs/spec.md — the contract: `harness.json` schema, gate exit-code semantics, `init` file set, spec schema, Mode B eligibility.
+- docs/adrs/ — architecture decision records; implement only against Accepted ADRs.
+- .harness/ledger.md — the build plan and its evidence.
+- AGENTS.md — the cross-agent contract for any agent working in the repo.
+- SKILL.md — the agent-facing skill definition.
