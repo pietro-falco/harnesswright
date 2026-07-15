@@ -1,6 +1,7 @@
 # ADR-006: Mode B ADW-ization — pre-gate orchestrator, typed specs, ADW-diagram precondition
 
-- **Status:** Proposed
+- **Status:** Accepted
+- **Accepted:** 2026-07-15
 - **Date:** 2026-07-15
 - **Deciders:** Pietro Falco
 - **Related:** ADR-001 (execution boundary), ADR-002 (`next`, authority rule), ADR-003 (per-slice spec schema), ADR-004 (Mode B execution contract — **extended, not superseded**), ADR-005 (one spec dialect — Proposed; the field added here lands in the dialect ADR-005 makes sole); external: vault ADR-050 (dual-mode operating model — Proposed), vault ADR-054 (harness deployment topology + Mode B preconditions — Proposed).
@@ -213,4 +214,4 @@ The canonical vault-side list in **vault ADR-054 D3** is amended to reference th
 
 ## Status
 
-Proposed. Per the two-commit ADR lifecycle, acceptance requires operator review and a separate ratification commit; implementation slices (the `type` field in `parseSpec`/`next --json`, the pre-gate loop in the harness-pack launcher, the diagram-presence validator, the vault ADR-054 D3 amendment) are blocked until then. By operator directive, acceptance of this ADR is **sequenced behind vault ADR-050 (dual-mode operating model) and vault ADR-054 (harness deployment topology) reaching Accepted**, since this ADR evolves Mode B, whose base model and precondition list those ADRs define. Cross-repo references use the ADR-051 prefixed form (`vault ADR-050`, `vault ADR-054`); this ADR is cited elsewhere as `harnesswright/ADR-006`.
+Accepted 2026-07-15. Its acceptance gate — vault ADR-050 (dual-mode operating model) and vault ADR-054 (harness deployment topology) reaching Accepted — was satisfied on 2026-07-15; both are now Accepted. The four implementation slices (the `type` field in `parseSpec`/`next --json`, the pre-gate loop in the harness-pack launcher, the diagram-presence validator, and the vault ADR-054 D3 precondition amendment) are unblocked and proceed as separate slices. Cross-repo references use the ADR-051 prefixed form (`vault ADR-050`, `vault ADR-054`); this ADR is cited elsewhere as `harnesswright/ADR-006`.
