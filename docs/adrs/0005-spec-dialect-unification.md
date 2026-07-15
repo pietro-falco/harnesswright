@@ -1,6 +1,7 @@
 # ADR-005: One spec dialect — the Mode B launcher consumes `next --json` instead of parsing specs
 
-- **Status:** Proposed
+- **Status:** Accepted
+- **Accepted:** 2026-07-15
 - **Date:** 2026-07-13
 - **Deciders:** Pietro Falco
 - **Related:** ADR-001 (execution boundary), ADR-002 (`next`, authority rule),
