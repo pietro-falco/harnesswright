@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { effectiveModel, effectiveTools, isModeBEligible, parseSpec, type Spec } from "./spec.ts";
+import { effectiveModel, effectiveTools, isModeBEligible, parseSpec, validateSpecBody, type Spec } from "./spec.ts";
 
 function frontmatter(lines: string[]): string {
   return ["---", ...lines, "---", "", "# Brief", "", "Prose body, never parsed.", ""].join("\n");
@@ -256,6 +256,32 @@ test("an empty tools list is a valid declaration (ADR-005 D3 does not forbid it)
 
 test("a tools entry that is an empty string is a configuration error", () => {
   assertInvalid([...VALID_A, "tools:", '  - ""'], /tools.*non-empty/);
+});
+
+const MERMAID_BLOCK = ["```mermaid", "flowchart TD", "  A --> B", "```"];
+
+function specText(lines: string[], bodyLines: string[]): string {
+  return ["---", ...lines, "---", "", "# Brief", "", ...bodyLines, ""].join("\n");
+}
+
+test("validateSpecBody is a no-op for a mode A spec with no diagram", () => {
+  const raw = specText(VALID_A, ["Prose only, no diagram."]);
+  assert.doesNotThrow(() => validateSpecBody(raw, parseSpec(raw)));
+});
+
+test("a mode B spec body with a mermaid diagram passes validateSpecBody", () => {
+  const raw = specText(VALID_B, ["The ADW:", "", ...MERMAID_BLOCK]);
+  assert.doesNotThrow(() => validateSpecBody(raw, parseSpec(raw)));
+});
+
+test("a mode B spec body without a mermaid diagram is a configuration error (ADR-006 D3)", () => {
+  const raw = specText(VALID_B, ["Prose only, no diagram."]);
+  assert.throws(() => validateSpecBody(raw, parseSpec(raw)), /mermaid.*ADR-006 D3/);
+});
+
+test("an inline mention of a mermaid fence in prose does not satisfy the diagram requirement", () => {
+  const raw = specText(VALID_B, ["I will add a ```mermaid block later."]);
+  assert.throws(() => validateSpecBody(raw, parseSpec(raw)), /mermaid.*ADR-006 D3/);
 });
 
 test("effort low routes to the worker tier when model is absent (D8)", () => {

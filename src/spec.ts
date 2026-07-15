@@ -313,3 +313,25 @@ export function effectiveTools(spec: Spec): EffectiveTools {
 export function isModeBEligible(spec: Spec | null, locked: boolean): boolean {
   return spec !== null && spec.mode === "B" && spec.status === "accepted" && !locked;
 }
+
+const MERMAID_FENCE = /^```mermaid\s*$/m;
+
+/**
+ * ADR-006 D3: a Mode B spec's body MUST contain a fenced mermaid ADW diagram.
+ * Presence only — faithfulness is human review, not machine-checkable (D3).
+ * No-op for Mode A. Parses the frontmatter delimiters exactly as parseFrontmatter
+ * does, then searches only the body that follows the closing ---.
+ */
+export function validateSpecBody(raw: string, spec: Spec): void {
+  if (spec.mode !== "B") {
+    return;
+  }
+
+  const lines = raw.split("\n").map((line) => line.replace(/\r$/, ""));
+  const end = lines.findIndex((line, i) => i > 0 && line.trim() === "---");
+  const body = end === -1 ? "" : lines.slice(end + 1).join("\n");
+
+  if (!MERMAID_FENCE.test(body)) {
+    throw new Error('a mode B spec body must contain a fenced ```mermaid ADW diagram (ADR-006 D3)');
+  }
+}

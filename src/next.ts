@@ -3,7 +3,7 @@ import { join } from "node:path";
 import process from "node:process";
 import { parseHarnessConfig } from "./harness.ts";
 import { schedule, type ScheduleResult } from "./schedule.ts";
-import { effectiveModel, effectiveTools, isModeBEligible, parseSpec, type Spec, type SpecBudget, type SpecType } from "./spec.ts";
+import { effectiveModel, effectiveTools, isModeBEligible, parseSpec, validateSpecBody, type Spec, type SpecBudget, type SpecType } from "./spec.ts";
 
 type SpecReport = {
   mode: "A" | "B";
@@ -114,7 +114,9 @@ export function runNext(cwd: string, json: boolean): number {
   let spec: Spec | null = null;
   if (existsSync(specFile)) {
     try {
-      spec = parseSpec(readFileSync(specFile, "utf8"));
+      const raw = readFileSync(specFile, "utf8");
+      spec = parseSpec(raw);
+      validateSpecBody(raw, spec);
     } catch (err) {
       process.stderr.write(`${specPath}: ${(err as Error).message}\n`);
       return 2;

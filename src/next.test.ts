@@ -15,11 +15,11 @@ function writeHarnessConfig(dir: string, config: unknown): void {
   writeFileSync(join(dir, ".harness/harness.json"), JSON.stringify(config));
 }
 
-function writeSpec(dir: string, sliceId: string, frontmatter: string[]): void {
+function writeSpec(dir: string, sliceId: string, frontmatter: string[], bodyLines: string[] = ["```mermaid", "flowchart TD", "  A --> B", "```"]): void {
   mkdirSync(join(dir, ".harness/specs"), { recursive: true });
   writeFileSync(
     join(dir, `.harness/specs/${sliceId}.md`),
-    ["---", ...frontmatter, "---", "", "# Brief", ""].join("\n"),
+    ["---", ...frontmatter, "---", "", "# Brief", "", ...bodyLines, ""].join("\n"),
   );
 }
 
@@ -293,6 +293,17 @@ test("an invalid spec for the unlocked slice is a configuration error (exit 2)",
   const dir = makeTmpDir();
   writeHarnessConfig(dir, singleSliceConfig());
   writeSpec(dir, "S1", [...MODE_B_SPEC, "workstream: 2"]);
+
+  const { exitCode } = captureStdout(() => runNext(dir, true));
+  assert.equal(exitCode, 2);
+
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("a mode B spec whose body has no ADW diagram is a configuration error (exit 2)", () => {
+  const dir = makeTmpDir();
+  writeHarnessConfig(dir, singleSliceConfig());
+  writeSpec(dir, "S1", MODE_B_SPEC, ["Prose only, no diagram."]);
 
   const { exitCode } = captureStdout(() => runNext(dir, true));
   assert.equal(exitCode, 2);
