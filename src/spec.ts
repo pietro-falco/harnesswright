@@ -2,6 +2,8 @@ import { posix } from "node:path";
 
 export type SpecBudget = { tokens?: number; turns?: number; wall_clock?: string };
 
+export type SpecType = "chore" | "bug" | "feature" | "hotfix";
+
 export type Spec = {
   mode: "A" | "B";
   efficiency: string[];
@@ -11,10 +13,14 @@ export type Spec = {
   criteria: string[];
   status: "proposed" | "accepted";
   scope?: string[];
+  type?: SpecType;
   model?: string;
+  tools?: string[];
 };
 
 export type EffectiveModel = { model: string; model_source: "declared" | "effort-default" };
+
+export type EffectiveTools = { tools: string[]; tools_source: "declared" | "default" };
 
 type Scalar = string | number;
 type FrontmatterValue = Scalar | Scalar[] | Record<string, Scalar>;
@@ -29,7 +35,9 @@ const SPEC_FIELDS = new Set([
   "criteria",
   "status",
   "scope",
+  "type",
   "model",
+  "tools",
 ]);
 const BUDGET_DIMENSIONS = new Set(["tokens", "turns", "wall_clock"]);
 const WALL_CLOCK_PATTERN = /^\d+(m|h)$/;
@@ -42,6 +50,9 @@ const GATE_FAILURE = "gate-failure";
 
 /** D8 routing table: effort is the only input, and the top tier is never a default. */
 const EFFORT_TIER: Record<Spec["effort"], string> = { low: "worker", high: "executor" };
+
+/** ADR-005 D3: the conservative default tool ceiling when a spec declares no tools. */
+const DEFAULT_TOOLS = ["Read", "Edit", "Bash", "Grep", "Glob"];
 
 function parseScalar(raw: string, context: string): Scalar {
   const first = raw[0];
@@ -255,11 +266,28 @@ export function parseSpec(raw: string): Spec {
     throw new Error('spec must declare "scope" when mode is B');
   }
 
+  if (fields.type !== undefined) {
+    const specType = fields.type;
+    if (specType !== "chore" && specType !== "bug" && specType !== "feature" && specType !== "hotfix") {
+      throw new Error(`spec "type" must be one of "chore", "bug", "feature", "hotfix", got: ${JSON.stringify(specType)}`);
+    }
+    if (specType === "hotfix" && mode === "B") {
+      throw new Error('spec "type" "hotfix" is Mode A only; the pair (type "hotfix", mode "B") is a configuration error');
+    }
+    spec.type = specType;
+  } else if (mode === "B") {
+    throw new Error('spec must declare "type" when mode is B');
+  }
+
   if (fields.model !== undefined) {
     if (typeof fields.model !== "string" || fields.model === "") {
       throw new Error('spec "model" must be a non-empty string');
     }
     spec.model = fields.model;
+  }
+
+  if (fields.tools !== undefined) {
+    spec.tools = asStringList(fields.tools, "tools");
   }
 
   return spec;
@@ -271,6 +299,14 @@ export function effectiveModel(spec: Spec): EffectiveModel {
     return { model: spec.model, model_source: "declared" };
   }
   return { model: EFFORT_TIER[spec.effort], model_source: "effort-default" };
+}
+
+/** ADR-005 D3: the declared tool ceiling wins; otherwise the conservative default applies. */
+export function effectiveTools(spec: Spec): EffectiveTools {
+  if (spec.tools !== undefined) {
+    return { tools: spec.tools, tools_source: "declared" };
+  }
+  return { tools: [...DEFAULT_TOOLS], tools_source: "default" };
 }
 
 /** D2: eligibility is a predicate over machine state — never over ledger prose. */

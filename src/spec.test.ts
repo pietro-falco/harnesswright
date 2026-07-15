@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { effectiveModel, isModeBEligible, parseSpec, type Spec } from "./spec.ts";
+import { effectiveModel, effectiveTools, isModeBEligible, parseSpec, type Spec } from "./spec.ts";
 
 function frontmatter(lines: string[]): string {
   return ["---", ...lines, "---", "", "# Brief", "", "Prose body, never parsed.", ""].join("\n");
@@ -31,6 +31,7 @@ const VALID_B = [
   "criteria:",
   "  - tests-pass",
   "status: accepted",
+  "type: feature",
   "scope:",
   "  - src/spec.ts",
 ];
@@ -206,6 +207,55 @@ test("an empty scope entry is a configuration error", () => {
 
 test("an empty model string is a configuration error", () => {
   assertInvalid([...VALID_A, 'model: ""'], /model.*non-empty/);
+});
+
+test("a mode B spec parses a declared type", () => {
+  assert.equal(parseSpec(frontmatter(VALID_B)).type, "feature");
+});
+
+test("type is optional for mode A", () => {
+  assert.equal(parseSpec(frontmatter(VALID_A)).type, undefined);
+});
+
+for (const value of ["chore", "bug", "feature", "hotfix"]) {
+  test(`type "${value}" is valid on a mode A spec`, () => {
+    assert.equal(parseSpec(frontmatter([...VALID_A, `type: ${value}`])).type, value);
+  });
+}
+
+test("mode B without type is a configuration error", () => {
+  assertInvalid(withoutLine(VALID_B, "type:"), /spec must declare "type" when mode is B/);
+});
+
+test("an unknown type is a configuration error", () => {
+  assertInvalid([...withoutLine(VALID_B, "type:"), "type: refactor"], /spec "type" must be one of/);
+});
+
+test("type hotfix with mode B is a configuration error (hotfix is Mode A only)", () => {
+  assertInvalid([...withoutLine(VALID_B, "type:"), "type: hotfix"], /hotfix.*Mode A/);
+});
+
+test("tools defaults to the conservative set when absent (ADR-005 D3)", () => {
+  assert.deepEqual(effectiveTools(parseSpec(frontmatter(VALID_A))), {
+    tools: ["Read", "Edit", "Bash", "Grep", "Glob"],
+    tools_source: "default",
+  });
+});
+
+test("a declared tools list wins over the default (ADR-005 D3)", () => {
+  const spec = parseSpec(frontmatter([...VALID_A, "tools:", "  - Read", "  - Bash"]));
+  assert.deepEqual(spec.tools, ["Read", "Bash"]);
+  assert.deepEqual(effectiveTools(spec), { tools: ["Read", "Bash"], tools_source: "declared" });
+});
+
+test("an empty tools list is a valid declaration (ADR-005 D3 does not forbid it)", () => {
+  const spec = parseSpec(frontmatter([...VALID_A, "tools: []"]));
+  assert.deepEqual(spec.tools, []);
+  assert.deepEqual(effectiveTools(spec), { tools: [], tools_source: "declared" });
+});
+
+test("a tools entry that is an empty string is a configuration error", () => {
+  assertInvalid([...VALID_A, "tools:", '  - ""'], /tools.*non-empty/);
 });
 
 test("effort low routes to the worker tier when model is absent (D8)", () => {

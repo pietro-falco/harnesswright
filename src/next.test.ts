@@ -39,6 +39,7 @@ const MODE_B_SPEC = [
   "criteria:",
   "  - tests-pass",
   "status: accepted",
+  "type: feature",
   "scope:",
   "  - src/spec.ts",
 ];
@@ -221,8 +222,11 @@ test("an accepted, unlocked mode B spec makes the unlocked slice eligible", () =
     stop_conditions: ["budget-exhaustion", "gate-failure"],
     criteria: ["tests-pass"],
     scope: ["src/spec.ts"],
+    type: "feature",
     model: "executor",
     model_source: "effort-default",
+    tools: ["Read", "Edit", "Bash", "Grep", "Glob"],
+    tools_source: "default",
   });
 
   rmSync(dir, { recursive: true, force: true });

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import process from "node:process";
 import { parseHarnessConfig } from "./harness.ts";
 import { schedule, type ScheduleResult } from "./schedule.ts";
-import { effectiveModel, isModeBEligible, parseSpec, type Spec, type SpecBudget } from "./spec.ts";
+import { effectiveModel, effectiveTools, isModeBEligible, parseSpec, type Spec, type SpecBudget, type SpecType } from "./spec.ts";
 
 type SpecReport = {
   mode: "A" | "B";
@@ -14,8 +14,11 @@ type SpecReport = {
   stop_conditions: string[];
   criteria: string[];
   scope?: string[];
+  type?: SpecType;
   model: string;
   model_source: "declared" | "effort-default";
+  tools: string[];
+  tools_source: "declared" | "default";
 };
 
 type NextReport =
@@ -28,6 +31,7 @@ type NextReport =
 
 function buildSpecReport(spec: Spec): SpecReport {
   const { model, model_source } = effectiveModel(spec);
+  const { tools, tools_source } = effectiveTools(spec);
   return {
     mode: spec.mode,
     status: spec.status,
@@ -37,8 +41,11 @@ function buildSpecReport(spec: Spec): SpecReport {
     stop_conditions: spec.stop_conditions,
     criteria: spec.criteria,
     ...(spec.scope !== undefined ? { scope: spec.scope } : {}),
+    ...(spec.type !== undefined ? { type: spec.type } : {}),
     model,
     model_source,
+    tools,
+    tools_source,
   };
 }
 
@@ -59,8 +66,11 @@ function formatHuman(report: NextReport): string {
 
   if (report.spec !== undefined) {
     const spec = report.spec;
-    lines.push(`spec: mode ${spec.mode}, ${spec.status}, effort ${spec.effort}`);
+    lines.push(
+      `spec: mode ${spec.mode}, ${spec.status}, effort ${spec.effort}${spec.type !== undefined ? `, type ${spec.type}` : ""}`,
+    );
     lines.push(`model: ${spec.model} (${spec.model_source})`);
+    lines.push(`tools: ${spec.tools.join(", ")} (${spec.tools_source})`);
     if (spec.scope !== undefined) {
       lines.push(`scope: ${spec.scope.join(", ")}`);
     }
