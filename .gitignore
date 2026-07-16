@@ -1,6 +1,7 @@
 node_modules/
 dist/
 **/.verity/reports/
+.harness/receipts/
 
 # macOS Finder metadata
 .DS_Store
