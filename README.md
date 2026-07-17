@@ -66,11 +66,20 @@ local runs speak the same language.
 ## How a slice flows
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif","fontSize":"15px","primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":14,"nodeSpacing":50,"rankSpacing":55,"wrappingWidth":260}}}%%
 flowchart LR
-    s1["next: unlocked slice"] --> s2["agent works"] --> s3["gate"]
-    s3 -->|"exit 0"| s4["slice passed: ledger"]
-    s3 -->|"exit 1"| s5["full stop: operator review"]
+    s1["<b>next</b><br/>unlocked slice"] --> s2["agent<br/>works"]
+    s2 --> s3{"gate"}
+    s3 -->|"exit 0"| s4["slice passed<br/>ledger updated"]
+    s3 -->|"exit 1"| s5["<b>full stop</b><br/>operator review"]
     s4 --> s1
+    classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
+    classDef gate fill:#1c2128,stroke:#ffd699,color:#ffd699,stroke-width:2px
+    classDef pass fill:#122117,stroke:#2ea043,color:#7ee2a8
+    classDef halt fill:#2b2113,stroke:#ffd699,color:#ffd699
+    class s3 gate
+    class s4 pass
+    class s5 halt
 ```
 
 `next` is the read-only half of the loop: it reports the first slice
@@ -85,9 +94,13 @@ retries its way to green.
 ## Where it sits
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif","fontSize":"15px","primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":14,"nodeSpacing":50,"rankSpacing":55,"wrappingWidth":260}}}%%
 flowchart TB
-    l1["Intent: spec tools"] --> l2["Execution: agents and orchestrators"]
-    l2 --> l3["Truth: harnesswright verifies the result"]
+    l1["<b>Intent</b><br/>spec tools"] --> l2["<b>Execution</b><br/>agents and orchestrators"]
+    l2 --> l3["<b>Truth</b><br/>harnesswright verifies the result"]
+    classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
+    classDef truth fill:#2b2113,stroke:#ffd699,color:#ffd699,stroke-width:2px
+    class l3 truth
 ```
 
 Intent flows down to execution; harnesswright is the layer
