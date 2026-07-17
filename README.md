@@ -16,13 +16,20 @@ deterministic merge gates powered by
 [verity](https://github.com/pietro-falco/verity).
 
 ```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif","fontSize":"15px","primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":14,"nodeSpacing":50,"rankSpacing":55,"wrappingWidth":260}}}%%
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d","clusterBkg":"transparent","clusterBorder":"#30363d"},"flowchart":{"htmlLabels":false,"curve":"basis","padding":16,"nodeSpacing":55,"rankSpacing":60}}}%%
 flowchart LR
-    n1["<b>agent's claim</b>"] --> n2{"gate"}
-    n2 -->|"exit 0<br/>all claims pass"| n3["<b>receipt</b><br/>evidence"]
-    n2 -->|"exit 1<br/>a claim fails"| n4["<b>full stop</b>"]
+    n1["agent's claim"] --> n2{"gate"}
+    n2 -->|"exit 0<br/>all claims pass"| n3["receipt<br/>evidence"]
+    n2 -->|"exit 1<br/>a claim fails"| n4["full stop"]
     n2 -.->|"exit 2<br/>config error"| n5["no verdict"]
+    subgraph legend["legend"]
+        direction LR
+        k1["amber: gate / operator"]:::halt
+        k2["green: verified pass"]:::pass
+        k3["slate: neutral"]:::neutral
+    end
     classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
+    classDef neutral fill:#1c2128,stroke:#484f58,color:#e6edf3
     classDef gate fill:#1c2128,stroke:#ffd699,color:#ffd699,stroke-width:2px
     classDef pass fill:#122117,stroke:#2ea043,color:#7ee2a8
     classDef halt fill:#2b2113,stroke:#ffd699,color:#ffd699
@@ -74,12 +81,12 @@ local runs speak the same language.
 ## How a slice flows
 
 ```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif","fontSize":"15px","primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":14,"nodeSpacing":50,"rankSpacing":55,"wrappingWidth":260}}}%%
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d","clusterBkg":"transparent","clusterBorder":"#30363d"},"flowchart":{"htmlLabels":false,"curve":"basis","padding":16,"nodeSpacing":55,"rankSpacing":60}}}%%
 flowchart LR
-    s1["<b>next</b><br/>unlocked slice"] --> s2["agent<br/>works"]
+    s1["next<br/>unlocked slice"] --> s2["agent<br/>works"]
     s2 --> s3{"gate"}
     s3 -->|"exit 0"| s4["slice passed<br/>ledger updated"]
-    s3 -->|"exit 1"| s5["<b>full stop</b><br/>operator review"]
+    s3 -->|"exit 1"| s5["full stop<br/>operator review"]
     s4 --> s1
     classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
     classDef gate fill:#1c2128,stroke:#ffd699,color:#ffd699,stroke-width:2px
@@ -102,10 +109,10 @@ retries its way to green.
 ## Where it sits
 
 ```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif","fontSize":"15px","primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":14,"nodeSpacing":50,"rankSpacing":55,"wrappingWidth":260}}}%%
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d","clusterBkg":"transparent","clusterBorder":"#30363d"},"flowchart":{"htmlLabels":false,"curve":"basis","padding":16,"nodeSpacing":55,"rankSpacing":60}}}%%
 flowchart TB
-    l1["<b>Intent</b><br/>spec tools"] --> l2["<b>Execution</b><br/>agents and orchestrators"]
-    l2 --> l3["<b>Truth</b><br/>harnesswright verifies the result"]
+    l1["Intent<br/>spec tools"] --> l2["Execution<br/>agents and orchestrators"]
+    l2 --> l3["Truth<br/>harnesswright verifies the result"]
     classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
     classDef truth fill:#2b2113,stroke:#ffd699,color:#ffd699,stroke-width:2px
     class l3 truth
