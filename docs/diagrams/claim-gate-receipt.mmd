@@ -1,0 +1,13 @@
+%%{init: {"theme":"dark","securityLevel":"loose","themeVariables":{"fontFamily":"'SF Pro Text','Segoe UI',Helvetica,Arial,sans-serif","fontSize":"17px","primaryColor":"#0d1117","primaryTextColor":"#e6edf3","primaryBorderColor":"#8b949e","lineColor":"#6e7681","edgeLabelBackground":"#0d1117"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":18,"nodeSpacing":60,"rankSpacing":70}}}%%
+flowchart LR
+    n1("<b style='font-size:1.15em'>agent's claim</b>") --> n2{"<b>gate</b>"}
+    n2 -->|"<small>exit 0 · all claims pass</small>"| n3("<b style='font-size:1.15em'>receipt</b><br/><span style='font-size:0.85em'>evidence</span>")
+    n2 -->|"<small>exit 1 · a claim fails</small>"| n4("<b style='font-size:1.15em'>full stop</b>")
+    n2 -.->|"<small>exit 2 · config error</small>"| n5("no verdict")
+    class n2 gate
+    class n3 pass
+    class n4 halt
+    classDef default fill:#0d1117,stroke:#8b949e,stroke-width:1.5px,color:#e6edf3
+    classDef gate fill:#0d1117,stroke:#ffd699,stroke-width:2px,color:#ffd699
+    classDef pass fill:#0d1117,stroke:#2ea043,stroke-width:1.5px,color:#7ee2a8
+    classDef halt fill:#0d1117,stroke:#ffd699,stroke-width:1.5px,color:#ffd699

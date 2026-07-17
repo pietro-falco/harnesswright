@@ -1,0 +1,9 @@
+%%{init: {"theme":"dark","securityLevel":"loose","themeVariables":{"fontFamily":"'SF Pro Text','Segoe UI',Helvetica,Arial,sans-serif","fontSize":"17px","primaryColor":"#0d1117","primaryTextColor":"#e6edf3","primaryBorderColor":"#8b949e","lineColor":"#6e7681","edgeLabelBackground":"#0d1117"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":18,"nodeSpacing":60,"rankSpacing":70}}}%%
+flowchart TB
+    l1("<b style='font-size:1.2em'>Intent</b><br/><span style='font-size:0.85em'>spec tools declare the work</span>") --> l2("<b style='font-size:1.2em'>Execution</b><br/><span style='font-size:0.85em'>agents and orchestrators do it</span>")
+    l2 --> l3("<b style='font-size:1.2em'>Truth</b><br/><span style='font-size:0.85em'>harnesswright verifies the result</span>")
+    class l3 halt
+    classDef default fill:#0d1117,stroke:#8b949e,stroke-width:1.5px,color:#e6edf3
+    classDef gate fill:#0d1117,stroke:#ffd699,stroke-width:2px,color:#ffd699
+    classDef pass fill:#0d1117,stroke:#2ea043,stroke-width:1.5px,color:#7ee2a8
+    classDef halt fill:#0d1117,stroke:#ffd699,stroke-width:1.5px,color:#ffd699

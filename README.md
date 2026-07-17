@@ -15,28 +15,9 @@ through — evidence-gated slices, one worktree per session, and
 deterministic merge gates powered by
 [verity](https://github.com/pietro-falco/verity).
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d","clusterBkg":"transparent","clusterBorder":"#30363d"},"flowchart":{"htmlLabels":false,"curve":"basis","padding":16,"nodeSpacing":55,"rankSpacing":60}}}%%
-flowchart LR
-    n1["agent's claim"] --> n2{"gate"}
-    n2 -->|"exit 0<br/>all claims pass"| n3["receipt<br/>evidence"]
-    n2 -->|"exit 1<br/>a claim fails"| n4["full stop"]
-    n2 -.->|"exit 2<br/>config error"| n5["no verdict"]
-    subgraph legend["legend"]
-        direction LR
-        k1["amber: gate / operator"]:::halt
-        k2["green: verified pass"]:::pass
-        k3["slate: neutral"]:::neutral
-    end
-    classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
-    classDef neutral fill:#1c2128,stroke:#484f58,color:#e6edf3
-    classDef gate fill:#1c2128,stroke:#ffd699,color:#ffd699,stroke-width:2px
-    classDef pass fill:#122117,stroke:#2ea043,color:#7ee2a8
-    classDef halt fill:#2b2113,stroke:#ffd699,color:#ffd699
-    class n2 gate
-    class n3 pass
-    class n4 halt
-```
+<p align="center"><img src="docs/diagrams/claim-gate-receipt.png" width="780" alt="An agent's claim reaches the gate. Exit 0 means all claims pass and produces a receipt with evidence, exit 1 means a claim fails and everything stops, exit 2 means config error and no verdict"></p>
+
+<sub>Color key: amber marks the gate and anything waiting on the operator, green marks a verified pass, grey is neutral state.</sub>
 
 ## Why
 
@@ -80,22 +61,7 @@ local runs speak the same language.
 
 ## How a slice flows
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d","clusterBkg":"transparent","clusterBorder":"#30363d"},"flowchart":{"htmlLabels":false,"curve":"basis","padding":16,"nodeSpacing":55,"rankSpacing":60}}}%%
-flowchart LR
-    s1["next<br/>unlocked slice"] --> s2["agent<br/>works"]
-    s2 --> s3{"gate"}
-    s3 -->|"exit 0"| s4["slice passed<br/>ledger updated"]
-    s3 -->|"exit 1"| s5["full stop<br/>operator review"]
-    s4 --> s1
-    classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
-    classDef gate fill:#1c2128,stroke:#ffd699,color:#ffd699,stroke-width:2px
-    classDef pass fill:#122117,stroke:#2ea043,color:#7ee2a8
-    classDef halt fill:#2b2113,stroke:#ffd699,color:#ffd699
-    class s3 gate
-    class s4 pass
-    class s5 halt
-```
+<p align="center"><img src="docs/diagrams/slice-loop.png" width="820" alt="Slice loop: next reports the unlocked slice, the agent works, the gate decides. Exit 0 marks the slice passed and updates the ledger, exit 1 is a full stop for operator review"></p>
 
 `next` is the read-only half of the loop: it reports the first slice
 whose predecessors have passed — manifest, criteria, and, when a
@@ -108,15 +74,7 @@ retries its way to green.
 
 ## Where it sits
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d","clusterBkg":"transparent","clusterBorder":"#30363d"},"flowchart":{"htmlLabels":false,"curve":"basis","padding":16,"nodeSpacing":55,"rankSpacing":60}}}%%
-flowchart TB
-    l1["Intent<br/>spec tools"] --> l2["Execution<br/>agents and orchestrators"]
-    l2 --> l3["Truth<br/>harnesswright verifies the result"]
-    classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
-    classDef truth fill:#2b2113,stroke:#ffd699,color:#ffd699,stroke-width:2px
-    class l3 truth
-```
+<p align="center"><img src="docs/diagrams/layer-map.png" width="420" alt="Layer map: Intent (spec tools declare the work) flows to Execution (agents and orchestrators do it) flows to Truth (harnesswright verifies the result)"></p>
 
 Intent flows down to execution; harnesswright is the layer
 that decides whether the result is true. The table carries the detail.
