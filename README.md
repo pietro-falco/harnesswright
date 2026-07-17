@@ -96,6 +96,8 @@ These are complements, not competitors: write intent with a spec tool,
 scale execution with an orchestrator, and let a deterministic gate
 decide whether "done" is true.
 
+<sub>The full three-tool integration doc lives in harness-pack at [docs/STACK.md](https://github.com/pietro-falco/harness-pack/blob/main/docs/STACK.md).</sub>
+
 ## Non-goals
 
 - **Never executes or orchestrates agents.** No spawning, no scheduling,
