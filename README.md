@@ -10,8 +10,8 @@
 **An agent's "done" is a claim, not a fact.** harnesswright is a
 zero-runtime-dependency CLI that generates a governance-first,
 verification-first harness into any repository where coding agents work.
-It never executes an agent: it shapes the structure their work must pass
-through — evidence-gated slices, one worktree per session, and
+It never executes an agent. It shapes the structure their work must pass
+through: evidence-gated slices, one worktree per session, and
 deterministic merge gates powered by
 [verity](https://github.com/pietro-falco/verity).
 
@@ -22,10 +22,14 @@ deterministic merge gates powered by
 ## Why
 
 Coding agents produce confident prose about work they may not have done.
-Orchestrators multiply that output; they don't verify it. The missing
+Orchestrators multiply that output; they do not verify it. The missing
 layer is deterministic truth: claims reconciled against the literal
-filesystem, git HEAD, and command exit codes — the same receipt whether
-the work came from Claude Code, Codex, Gemini CLI, Cursor, or a human.
+filesystem, the git HEAD, and command exit codes. The receipt comes out
+the same whether the work was done by Claude Code, Codex, Gemini CLI,
+Cursor, or a human.
+
+Think of it as a notary for agent work. The agent can say anything it
+likes. The notary stamps only what the record supports.
 
 harnesswright installs that layer in under a minute and stays out of the
 way: plain committed files, no daemon, no telemetry, no API keys.
@@ -63,31 +67,33 @@ local runs speak the same language.
 
 <p align="center"><img src="docs/diagrams/slice-loop.png" width="820" alt="Slice loop: next reports the unlocked slice, the agent works, the gate decides. Exit 0 marks the slice passed and updates the ledger, exit 1 is a full stop for operator review"></p>
 
-`next` is the read-only half of the loop: it reports the first slice
-whose predecessors have passed — manifest, criteria, and, when a
+A slice is a small unit of declared work with acceptance criteria
+attached; the ledger is the ordered list of slices. `next` is the
+read-only half of the loop. It reports the first slice whose
+predecessors have passed, with its manifest, its criteria, and, when a
 per-slice spec exists, its Mode B eligibility. It never writes and never
-executes. `--json` emits the same report for machines — an `unlocked`
+executes. `--json` emits the same report for machines: an `unlocked`
 slice with its manifest and criteria, or `{"kind":"all-passed", ...}`
 when the ledger is done.
-A failing gate is a full stop for operator review — the agent never
+A failing gate is a full stop for operator review. The agent never
 retries its way to green.
 
 ## Where it sits
 
 <p align="center"><img src="docs/diagrams/layer-map.png" width="420" alt="Layer map: Intent (spec tools declare the work) flows to Execution (agents and orchestrators do it) flows to Truth (harnesswright verifies the result)"></p>
 
-Intent flows down to execution; harnesswright is the layer
-that decides whether the result is true. The table carries the detail.
+Intent flows down to execution. harnesswright is the layer that decides
+whether the result is true. The table carries the detail.
 
 |  | [GitHub Spec Kit](https://github.com/github/spec-kit) | [Claude Code dynamic workflows](https://code.claude.com/docs/en/workflows) | harnesswright |
 |---|---|---|---|
-| Layer | Intent — spec → plan → tasks | Execution — orchestrates parallel subagents | Truth — deterministic evidence gates |
-| How work is checked | Human review of spec artifacts | Agents adversarially review other agents | Machine reconciliation against filesystem, git HEAD, and exit codes — no model in the loop |
+| Layer | Intent: spec → plan → tasks | Execution: orchestrates parallel subagents | Truth: deterministic evidence gates |
+| How work is checked | Human review of spec artifacts | Agents adversarially review other agents | Machine reconciliation against filesystem, git HEAD, and exit codes, with no model in the loop |
 | Executes agents | No (your agent runs the tasks) | Yes | Never |
 | Agent coupling | 30+ integrations | Claude Code | Agent-agnostic via `AGENTS.md` + `SKILL.md` open standards |
 
 These are complements, not competitors: write intent with a spec tool,
-scale execution with an orchestrator — and let a deterministic gate
+scale execution with an orchestrator, and let a deterministic gate
 decide whether "done" is true.
 
 ## Non-goals
@@ -104,31 +110,33 @@ decide whether "done" is true.
 ## Built with itself
 
 This repository adopted its own harness at slice S7 and is gated by its
-own `gate` command in CI. The receipt at HEAD is 18+ claims green — and
+own `gate` command in CI. The receipt at HEAD is 18+ claims green, and
 three of those claims exist because the harness caught its own author.
-All three incidents are honest, committed history:
+That is the credibility argument in miniature: the tool polices its own
+history the same way it will police yours. All three incidents are
+honest, committed history:
 
 1. **The recursive gate (S4).** An early manifest claim ran `gate`
-   itself — a self-recursive check one step from a fork bomb. The claim
+   itself, a self-recursive check one step from a fork bomb. The claim
    was removed and a re-entrancy guard added: `gate` exits `2` if invoked
    inside itself, and that guard is now itself a claim.
 2. **The leaking guard (S7).** The re-entrancy environment variable
    leaked into descendant processes and broke unrelated test runs. Tests
    are now hermetic against an inherited `HARNESSWRIGHT_GATE`.
 3. **The non-reproducible claim (S7, caught by CI).** A claim asserted
-   local `core.hooksPath` configuration — true on the dev machine, false
-   on every fresh clone. CI's clean checkout failed it; it was replaced
-   with a check on the committed executable bit. Local truth is not
-   repository truth.
+   local `core.hooksPath` configuration: true on the dev machine, false
+   on every fresh clone. CI's clean checkout failed it, and it was
+   replaced with a check on the committed executable bit. Local truth is
+   not repository truth.
 
 The build plan lives in `.harness/ledger.md`; every slice records its
 required evidence and its gate.
 
 ## Demo
 
-`demo/osint/` is a self-contained, local-first example — a tiny OSINT
+`demo/osint/` is a self-contained, local-first example: a tiny OSINT
 indicators dataset with a schema validator and its own claims manifest.
-It exists to make the thesis concrete: the agent's prose says the data is
+It exists to make the thesis concrete. The agent's prose says the data is
 clean; the receipt proves it. Zero API keys, zero network.
 
 ```sh
@@ -136,13 +144,13 @@ cd demo/osint
 npx harnesswright gate   # watch claims reconcile against the real files
 ```
 
-The demo's claims are part of this repository's own gate — if the demo
+The demo's claims are part of this repository's own gate: if the demo
 breaks, the build breaks.
 
 ## Security
 
 `gate` executes the commands declared in the target repository's
-`.verity/claims.json` — treat a repo's claims manifest exactly like its
+`.verity/claims.json`. Treat a repo's claims manifest exactly like its
 npm scripts: read it before running `gate` on untrusted code. `doctor`
 is read-only. See [SECURITY.md](SECURITY.md).
 
