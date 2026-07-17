@@ -20,7 +20,7 @@ function listFilesRecursive(root: string): string[] {
   return out.sort();
 }
 
-test("init --yes on an empty directory creates exactly the 10 spec paths", () => {
+test("init --yes on an empty directory creates exactly the 11 spec paths", () => {
   const dir = mkdtempSync(join(tmpdir(), "harnesswright-"));
   const specs = renderTemplates(basename(dir));
 
@@ -60,7 +60,7 @@ test("a second init without --force skips existing files and leaves content unch
   assert.ok(entries.every((e) => e.action === "skip"));
 
   const summary = emit(entries, specs, dir);
-  assert.deepEqual(summary, { created: 0, skipped: 10, overwritten: 0 });
+  assert.deepEqual(summary, { created: 0, skipped: 11, overwritten: 0 });
 
   for (const spec of specs) {
     assert.deepEqual(readFileSync(join(dir, spec.path)), firstPass.get(spec.path));
@@ -80,7 +80,7 @@ test("a second init with --force overwrites every existing file", () => {
   assert.ok(entries.every((e) => e.action === "overwrite"));
 
   const summary = emit(entries, specs, dir);
-  assert.deepEqual(summary, { created: 0, skipped: 0, overwritten: 10 });
+  assert.deepEqual(summary, { created: 0, skipped: 0, overwritten: 11 });
 
   rmSync(dir, { recursive: true, force: true });
 });
@@ -95,6 +95,25 @@ test("emitted .harness/harness.json is valid JSON with version 0.1 and project =
   const parsed = JSON.parse(readFileSync(join(dir, ".harness/harness.json"), "utf8"));
   assert.equal(parsed.version, "0.1");
   assert.equal(parsed.project, project);
+
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("init emits CLAUDE.md that points at harness-pack's docs/STACK.md agent contract, not a restatement", () => {
+  const dir = mkdtempSync(join(tmpdir(), "harnesswright-"));
+  const specs = renderTemplates(basename(dir));
+
+  emit(plan(specs, new Set(), false), specs, dir);
+
+  const claudeMdPath = join(dir, "CLAUDE.md");
+  assert.ok(existsSync(claudeMdPath), "expected CLAUDE.md to be emitted");
+
+  // harness-pack pins the four agent-contract headings (### ADR gate, etc.) in
+  // its own claims; harnesswright pins that its generated template points at
+  // them. Two ends of the same guard, no duplicated contract text to drift.
+  const claudeMd = readFileSync(claudeMdPath, "utf8");
+  assert.match(claudeMd, /docs\/STACK\.md/);
+  assert.match(claudeMd, /Agent contract/);
 
   rmSync(dir, { recursive: true, force: true });
 });

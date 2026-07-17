@@ -6,21 +6,21 @@ import { renderTemplates } from "./templates.ts";
 const SPECS = renderTemplates("test-project");
 const ALL_PATHS = new Set(SPECS.map((s) => s.path));
 
-test("empty directory produces 10 create entries", () => {
+test("empty directory produces 11 create entries", () => {
   const entries = plan(SPECS, new Set(), false);
-  assert.equal(entries.length, 10);
+  assert.equal(entries.length, 11);
   assert.ok(entries.every((e) => e.action === "create"));
 });
 
-test("all existing without force produces 10 skip entries", () => {
+test("all existing without force produces 11 skip entries", () => {
   const entries = plan(SPECS, ALL_PATHS, false);
-  assert.equal(entries.length, 10);
+  assert.equal(entries.length, 11);
   assert.ok(entries.every((e) => e.action === "skip"));
 });
 
-test("all existing with force produces 10 overwrite entries", () => {
+test("all existing with force produces 11 overwrite entries", () => {
   const entries = plan(SPECS, ALL_PATHS, true);
-  assert.equal(entries.length, 10);
+  assert.equal(entries.length, 11);
   assert.ok(entries.every((e) => e.action === "overwrite"));
 });
 
@@ -33,7 +33,7 @@ test("mix of existing and missing paths produces the right action per path", () 
   assert.equal(byPath.get("AGENTS.md"), "skip");
   assert.equal(byPath.get("SKILL.md"), "create");
   assert.equal(entries.filter((e) => e.action === "skip").length, 2);
-  assert.equal(entries.filter((e) => e.action === "create").length, 8);
+  assert.equal(entries.filter((e) => e.action === "create").length, 9);
 });
 
 test("output is sorted lexicographically by path", () => {
