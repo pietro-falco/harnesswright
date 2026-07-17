@@ -16,11 +16,19 @@ deterministic merge gates powered by
 [verity](https://github.com/pietro-falco/verity).
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif","fontSize":"15px","primaryColor":"#1c2128","primaryTextColor":"#e6edf3","primaryBorderColor":"#484f58","lineColor":"#8b949e","edgeLabelBackground":"#21262d"},"flowchart":{"htmlLabels":true,"curve":"basis","padding":14,"nodeSpacing":50,"rankSpacing":55,"wrappingWidth":260}}}%%
 flowchart LR
-    n1["agent's claim"] --> n2["gate"]
-    n2 -->|"exit 0: all claims pass"| n3["receipt: evidence"]
-    n2 -->|"exit 1: a claim fails"| n4["full stop"]
-    n2 -.->|"exit 2: config error"| n5["no verdict"]
+    n1["<b>agent's claim</b>"] --> n2{"gate"}
+    n2 -->|"exit 0<br/>all claims pass"| n3["<b>receipt</b><br/>evidence"]
+    n2 -->|"exit 1<br/>a claim fails"| n4["<b>full stop</b>"]
+    n2 -.->|"exit 2<br/>config error"| n5["no verdict"]
+    classDef default fill:#1c2128,stroke:#484f58,color:#e6edf3
+    classDef gate fill:#1c2128,stroke:#ffd699,color:#ffd699,stroke-width:2px
+    classDef pass fill:#122117,stroke:#2ea043,color:#7ee2a8
+    classDef halt fill:#2b2113,stroke:#ffd699,color:#ffd699
+    class n2 gate
+    class n3 pass
+    class n4 halt
 ```
 
 ## Why
