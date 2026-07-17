@@ -92,8 +92,10 @@ NEXT_ID="$(jq -r '.id // empty' <<<"$NEXT_JSON" 2>/dev/null || true)"
 # 7. Invoke the launcher. launch_worker.sh's own usage() accepts exactly one
 # positional argument, the spec file — it re-derives id, budget, and mode via
 # its own `harnesswright next --json` call (ADR-005 D1/D2: it is not a second
-# reader of the spec). No launcher logic is reimplemented here; the Telegram
-# gate and every other launcher-side behavior fire exactly as they already do.
+# reader of the spec). The launcher owns all gates; if TELEGRAM_BOT_TOKEN and
+# TELEGRAM_CHAT_ID are set in the environment, it sends a fail-open completion
+# notification (harness-pack commit 9029cc0). No launcher logic is
+# reimplemented here.
 LAUNCHER=".harness/pack/launch_worker.sh"
 [ -e ".harness/pack" ] && [ -f "$LAUNCHER" ] || fail "G-LAUNCH" "launcher not found: $LAUNCHER (symlinked pack or script missing)"
 
