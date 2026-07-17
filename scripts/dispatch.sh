@@ -96,7 +96,7 @@ NEXT_ID="$(jq -r '.id // empty' <<<"$NEXT_JSON" 2>/dev/null || true)"
 # TELEGRAM_CHAT_ID are set in the environment, it sends a fail-open completion
 # notification (harness-pack commit 9029cc0). No launcher logic is
 # reimplemented here.
-LAUNCHER=".harness/pack/launch_worker.sh"
+LAUNCHER=".harness/pack/scripts/launch_worker.sh"
 [ -e ".harness/pack" ] && [ -f "$LAUNCHER" ] || fail "G-LAUNCH" "launcher not found: $LAUNCHER (symlinked pack or script missing)"
 
 exec "$LAUNCHER" "$SPEC_FILE"
