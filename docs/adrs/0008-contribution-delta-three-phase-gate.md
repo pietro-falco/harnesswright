@@ -1,6 +1,6 @@
 ---
 type: adr
-status: proposed
+status: accepted
 title: "the contribution delta — a pre-launch baseline, a three-phase gate, and a receipt that states its own no-op"
 id: ADR-008
 date: 2026-08-07
@@ -10,7 +10,8 @@ related-adrs: [harnesswright/ADR-003, harnesswright/ADR-004, harnesswright/ADR-0
 
 # ADR-008: the contribution delta — a pre-launch baseline, a three-phase gate, and a receipt that states its own no-op
 
-- **Status:** Proposed
+- **Status:** Accepted
+- **Accepted:** 2026-08-07
 - **Date:** 2026-08-07
 - **Deciders:** Pietro Falco
 - **Related:** ADR-004 (Mode B execution contract — D3's retry rule, D4's leases, D6's item-level verdicts and D7's closure receipt are **extended, none redefined**), ADR-007 (criteria strength — D5's two-phase gate gains a third, earlier phase; D1-D4 untouched), ADR-003 (per-slice spec schema — unchanged). Cross-repo, qualified: **harness-pack** ADR-005 (mission-control & receipts-index, Accepted — its D4 schema-tolerant reader is why this field needs no migration, and the `tier_requested` drift it deferred is closed here as a class, not an instance); **harness-pack** ADR-006 (learning layer, Accepted — its router reward is redefined by D7 below). Byte sources read before authoring: `harness-pack/scripts/launch_worker.sh` (75-83, 164, 236, 259, 268, 272-274), `harness-pack/templates/receipt.schema.json` (3-8, 15), `harness-pack/docs/OPERATOR-GUIDE.md` (77), `harness-pack/scripts/harness_stats.py` (59-67).
