@@ -1,6 +1,6 @@
 ---
 type: adr
-status: proposed
+status: accepted
 title: "criteria strength — HEAD-anchored trust, a two-phase gate, and a wired negative test"
 id: ADR-007
 date: 2026-07-17
@@ -10,7 +10,8 @@ related-adrs: [harnesswright/ADR-003, harnesswright/ADR-004, harnesswright/ADR-0
 
 # ADR-007: criteria strength — HEAD-anchored trust, a two-phase gate, and a wired negative test
 
-- **Status:** Proposed
+- **Status:** Accepted
+- **Accepted:** 2026-08-07
 - **Date:** 2026-07-17 (revised 2026-07-18 after recon of `verity/src/checks.ts`)
 - **Deciders:** Pietro Falco
 - **Related:** ADR-003 (per-slice spec schema — extended), ADR-004 (Mode B execution contract — the gate this strengthens; D6 scoping and D8c no-LLM-judge unchanged), ADR-005 (one spec dialect — Proposed), ADR-006 (Mode B ADW-ization — the pre-gate loop D4 wires into). External: verifiable-intel `FR-001` findings F7 / N6 / N8 / F8 / F16; byte source `verity/src/checks.ts` (`checkCommand` / `checkGitCommitted`).
