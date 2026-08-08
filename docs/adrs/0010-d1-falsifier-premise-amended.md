@@ -1,6 +1,6 @@
 ---
 type: adr
-status: proposed
+status: accepted
 title: "ADR-008 D1's falsifier cannot be seen red under its own premise — the premise is amended, the assertion is not"
 id: ADR-010
 date: 2026-08-09
@@ -40,6 +40,8 @@ Both twins therefore produce `NO_OP`. The two artifacts do **not** differ in the
 
 The row's red at `:143` is compound — "artifacts identical; no contribution verdict exists" — and the two conjuncts have different fates. The second is discharged the moment the field exists. The first survives that, and survives every implementation, because no implementation can make a criterion move on a tree where nothing has anywhere to move to. A row in that state is red forever and gates nothing, which is the failure `:139` names: "A row whose red has never been observed does not count as a gate" has a mirror image, a row whose red can never be *cleared*, and it is no better a gate.
 
+**The premise looks inherited rather than designed.** `:47` closes by anchoring its red to an artefact that already existed — "that is the red the 2026-08-07 exhibit already exhibits" — and the red it points at, the missing field, needs no particular baseline to be visible; on that reading the all-`PASS` tree arrived with the exhibit rather than being chosen to make D1's assertion discriminate, and D1 below restores that intent instead of overwriting it.
+
 **What was measured, and how far it is evidence.** That the contribution field now exists and that both twins read `NO_OP` was measured off-tree during this session's launcher repair turn, together with the discriminating case that this record's amended premise describes: a baseline of all-`FAIL` carried to all-`PASS` writes `verdict: CONTRIBUTED` with `delta: ["readme-committed","checks-pass"]`. That is reported here as a **session measurement, not as a verifiable fact** — it lives in a commit message, not in a fixture any reader can re-run. Making it repeatable is named as work in D3 below, and until that work lands this record's premise is argued rather than demonstrated.
 
 **Immutability is why this is a separate document, again.** `0008:3` reads `status: accepted` and `0009:3` reads `status: accepted`, both measured in this turn. The rule ADR-009 quotes at its `:23-24` from the vault's `code-execution-rules.md:34` — "Accepted ADRs and closed session logs are immutable: do not 'fix' stale references in them; supersede via a new ADR or an amendment" — binds both records equally. ADR-009's own acceptance gives it no lesser standing than ADR-008's.
@@ -50,9 +52,18 @@ The row's red at `:143` is compound — "artifacts identical; no contribution ve
 
 ### D1 — ADR-008 D1's falsifier premise is amended: the baseline must contain something that can move
 
-The premise at `0008:47` — "a tree whose criteria are already PASS" — is replaced, for the purpose of observing D1's red, by:
+The premise has **two loci** in ADR-008, and both are amended. Amending only the first would leave the old premise standing where the register is read. They are named by their decision and by their text as written, never by position — the form ADR-009 D2 states at its `:44` ("named by their decision and by their fixture as written, never by position"):
+
+| Locus — decision and text as written | The premise as it stands there |
+|---|---|
+| D1's falsifier — "two launcher runs against a tree whose criteria are already PASS, one with a working stub and one with a stub that returns immediately" (`0008:47`) | "a tree whose criteria are already PASS" |
+| D1's register row — "twin runs, criteria green at t0, one working stub / one inert" (`0008:143`) | "criteria green at t0" |
+
+Both are replaced, for the purpose of observing D1's red, by:
 
 > At least one declared criterion is `FAIL` or `ABSENT` at t0. The working stub carries that criterion to `PASS`; the stub that returns immediately does not.
+
+A reader who reaches the register without reading D1's prose sees only the Fixture column, so an amendment that named the falsifier alone would be invisible exactly where the gate is read.
 
 Under this premise the twin runs separate: arm A yields `CONTRIBUTED` with a non-empty delta, arm B yields `NO_OP` with an empty delta. The two artifacts differ in the contribution verdict — which is D1's assertion, satisfied rather than weakened.
 
@@ -70,9 +81,9 @@ ADR-009 D1 defines the class at its `:36` — verbatim:
 
 The row at `0008:143` is that, and stays that. This record changes the premise under which its red can be observed; it does not change what the row is doing. It is explicitly **not** reclassified to CONTROL (`0009:37`) or PIN (`0009:38`): both name outcomes that are green on both sides of the change, and D1's outcome is one that must be seen red first and then cleared. ADR-009 D2 left "the remaining rows … FALSIFIER and their obligation … unchanged" (`0009:51`); this record operates on the premise of one of those remaining rows and leaves that sentence true.
 
-### D3 — Two obligations the acceptance commit must discharge
+### D3 — Three obligations the acceptance commit must discharge
 
-Neither is discharged by this record, which is docs-only. Both are named here so that acceptance is not mistaken for completion.
+None of the three is discharged by this record, which is docs-only. All three are named here so that acceptance is not mistaken for completion.
 
 **(a) `0008:59` asks for an assertion, not a document.** Verbatim:
 
@@ -82,13 +93,21 @@ The shared filter — the single function reducing verity's report to `spec.crit
 
 **(b) The satisfiability probe must become a fixture.** The measurement quoted in the Context — all-`FAIL` at t0 carried to all-`PASS`, yielding `CONTRIBUTED` with a non-empty delta, beside its inert twin yielding `NO_OP` — exists only in a commit message. The acceptance commit makes it repeatable as the D1 arm of harness-pack's `tests/adr008_falsifier_fixture.sh`, whose path was confirmed present by listing in this turn and whose contents were not read.
 
+**(c) The amended red must be observed before it is cleared.** `0008:139` is normative — verbatim:
+
+> Normative, not a schedule: each row must be **seen red** before the decision it belongs to is implemented. A row whose red has never been observed does not count as a gate.
+
+D1 is already implemented — the launcher repair is in harness-pack's history — and the red observed to date was the red under the *old* premise. Under the amended premise the row has never been seen red, and at HEAD it is not observable: the launcher writes the contribution field, so the row would be green on its first run. The commit that carries (b)'s fixture must therefore observe the row **red** under the amended premise, against a tree in which the contribution field is absent, before it observes it green. Red and green are two halves of one arm, not two pieces of work; a commit that lands the green half alone leaves the gate in the state `:139` refuses to count.
+
+The artefact the red needs is indicated as available rather than to be reconstructed: the pre-repair launcher should be reachable in harness-pack's history at the parent of the repair commit. That is written as an indication and not as a fact — harness-pack lies outside this turn's measurement ceiling and that parent was not opened. How the red is staged is chosen by the session that holds the disk; this record names the obligation and does not prescribe the method.
+
 ## Non-goals
 
 - **No edit to ADR-008.** Not its body, not its frontmatter, no `superseded-by` key. It stays `accepted` and in force, and this is an amendment rather than a supersession because nothing in it is withdrawn — `:41`, `:45` and D1's assertion are each declared intact above.
 - **No edit to ADR-009.** It is `accepted`, and its immutability weighs exactly what ADR-008's weighs. Its D1 class set and its D2 classifications are *used* here, not revised.
 - **No restatement of ADR-008's register.** One row is named by decision and by fixture text. The register keeps one home.
 - **The prose paragraph currently carried in `EXPECT_D1` inside harness-pack's `tests/adr008_falsifier_fixture.sh` is a placeholder.** It records why the row is red under the old premise, which was the honest report available before this record existed. The acceptance commit replaces it with a reference to this record. That file is not opened in this turn and is not touched by this commit.
-- **No code, no fixture, no schema change, no launcher change.** This record is docs-only; D3's two obligations are named, not performed.
+- **No code, no fixture, no schema change, no launcher change.** This record is docs-only; D3's three obligations are named, not performed.
 - **No change to any other row of the register**, and no general rule about premises. One premise, one row, declared scope.
 
 ## Alternatives considered
@@ -106,4 +125,4 @@ The shared filter — the single function reducing verity's report to `spec.crit
 - ADR-008 now requires two records beside it to read correctly — ADR-009 for its register's classes, this one for D1's premise. That is the standing cost of the immutability rule, paid deliberately rather than avoided by an edit.
 - Until D3(b) lands, the evidence that the amended premise is satisfiable is a session measurement recorded in a commit message. Nobody should read acceptance of this record as evidence that the launcher discriminates; that evidence arrives with the fixture.
 - D3(a) is now visible as an outstanding obligation of ADR-008 rather than an implicit one. It was already owed; this record does not create it and does not clear it.
-- Status is `proposed`. Promotion to `accepted` is a second commit after human review, on the closed status enum at `0000-adr-template.md:46-48`. No implementation is unblocked while it is `proposed`: this record decides no instrument.
+- Status is `accepted`, promoted in this commit after human review, on the closed status enum at `0000-adr-template.md:46-48`. Acceptance unblocks the work D3 names and nothing else: this record decides no instrument, and D3(c) binds the commit that carries the fixture to see the amended red before it clears it.
