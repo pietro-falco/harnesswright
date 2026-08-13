@@ -28,8 +28,8 @@ filesystem, the git HEAD, and command exit codes. The receipt comes out
 the same whether the work was done by Claude Code, Codex, Gemini CLI,
 Cursor, or a human.
 
-Think of it as a notary for agent work. The agent can say anything it
-likes. The notary stamps only what the record supports.
+The agent can say anything it likes. The gate returns only what the
+filesystem, the git HEAD, and the exit codes support.
 
 harnesswright installs that layer in under a minute and stays out of the
 way: plain committed files, no daemon, no telemetry, no API keys.
